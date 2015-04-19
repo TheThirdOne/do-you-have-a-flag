@@ -1,4 +1,4 @@
-function Entity(url,frameWidth,frameHeight,height,width,x,y,collision){
+function Entity(url,frameWidth,frameHeight,width,height,x,y,collision){
   this.url = url;
   this.frameWidth = frameWidth;
   this.frameHeight = frameHeight;
@@ -83,10 +83,12 @@ function collideTop(entity){
   return false;
 }
 function onGround(entity){
-  var collision = [entity.collision.middle*entity.width+entity.x, entity.y+entity.height*entity.collision.foot];
+  var collision = [[entity.collision.middleLeft* entity.width+entity.x, entity.y+entity.height*entity.collision.foot],
+                   [entity.collision.middleRight*entity.width+entity.x, entity.y+entity.height*entity.collision.foot]];
   for(var i = 0; i < blocks.length;i++){
-    if(collideBlock(collision[0],collision[1],blocks[i])){
-      return {val:collision[1]-blocks[i].y};
+    if(collideBlock(collision[0][0],collision[0][1],blocks[i])
+     ||collideBlock(collision[1][0],collision[1][1],blocks[i])){
+      return {val:collision[0][1]-blocks[i].y};
     }
   }
   return false;
@@ -99,7 +101,7 @@ function runPhysics(delta,entity){
   }
   if(entity.moving){
     if(ground){
-      entity.dx = entity.direction*MAXSPEED*((ground)?1:AIRSPEED);
+      entity.dx = (entity.dx*0.9+0.1*entity.direction*MAXSPEED);
     }else{
       entity.dx += entity.direction*AIRSPEED*delta;
     }
@@ -119,7 +121,6 @@ function runPhysics(delta,entity){
     }
   }
   if(!ground || entity.dy < 0){
-    console.log(entity.dy);
     entity.dy -= GRAVITY*delta;
     entity.y  += entity.dy*delta;
     if(entity.dy < 0){

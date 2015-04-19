@@ -2,11 +2,12 @@ var keys = {
   JUMP: 32, //space
   LEFT: 65, //a
   RIGHT: 68,//d
+  UP: 87,//d
 };
 document.onkeydown = function(e){
   switch(e.keyCode){
+    case keys.UP:
     case keys.JUMP: //space
-      console.log("JUMP")
       if (onGround(player)) player.dy -= JUMPV;
       player.y -= 2;
       break;
@@ -22,6 +23,7 @@ document.onkeydown = function(e){
 };
 document.onkeyup = function(e){
   switch(e.keyCode){
+    case keys.UP:
     case keys.JUMP: //space
       //do nothing
       break;
